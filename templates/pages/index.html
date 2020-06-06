@@ -1,0 +1,53 @@
+{# дочерний шаблон index.html #}
+{% extends 'base.html' %}
+{% block title %} | HOME
+{% endblock title %}
+{% block content %}
+<div style="border: solid black 1px;">
+    <h1>TODOS IMAGE </h1>
+</div>
+<br>
+{{tasks}}
+<div style="border: solid green 1px; background-color: yellow;">
+    <h3>Create Task</h3>
+    <form action="{% url 'create_task' %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="Title"><br><br>
+        <textarea name="description" id="" cols="30" rows="1" placeholder="description"></textarea><br><br>
+        <input type="radio" name="priority" value="1">High <br>
+        <input type="radio" name="priority" value="2">Middle <br>
+        <input type="radio" name="priority" value="3">Low <br>
+        <input type="radio" name="priority" value="4">Non-priority <br> <br>
+        <button type="submit">Create Task</button>
+        <br>
+    <button type="submit">Create Task</button>
+    <br>
+    </form>
+</div>
+<br>
+<div style="border: solid red 1px; background-color: lightblue;">
+    <h3>Active Tasks</h3>
+    {% for task in tasks %}
+        {% if not task.is_completed %}
+            <p>{{task}}
+                <a href="{% url 'complete_task' task.id %}">Complete</a>
+                <a href="{% url 'delete_task' task.id %}">Delete</a>
+            </p>
+        {% endif %}
+    {% endfor %}
+</div>
+<br>
+<div style="border: solid red 1px; background-color: lime;">
+    <h3>Completed Tasks</h3>
+    {% for task in tasks %}
+        {% if task.is_completed %}
+            <p>{{task}}
+                <a href="{% url 'complete_task' task.id %}">Uncomplete</a>
+                <a href="{% url 'delete_task' task.id %}">Delete</a>
+            </p>
+        {% endif %}
+    {% endfor %}
+</div>
+<a href="{% url 'delete_all_task' %}">Delete all tasks</a>
+<br>
+{% endblock content %}

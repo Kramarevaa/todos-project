@@ -6,6 +6,7 @@ from tasks.models import Task
 # Create your views here.
 def index(request):
     tasks = Task.objects.all()
+    
     context = {
         'tasks': tasks
     }
@@ -13,12 +14,7 @@ def index(request):
     return render(request, 'pages/index.html', context=context)
 
  
-def about_index(request):
-    context = {
-        "message": "The men who sold the world000000000000",
-        "color": "#34AB5E"
-    }
-    return render(request, 'pages/about_index.html', context=context)
+
 
 def create_task(request):
     if request.method == 'POST':
@@ -31,14 +27,14 @@ def create_task(request):
         if 'priority' in request.POST:
             new_task.priority = int (request.POST['priority'])
         new_task.save()
-    return redirect('index')
+        return redirect('index')
         
 def complete_task(request, task_id):
-    task = Task.objects.get(id=str(task_id))
-    if task.is_complete:
-        task.is_complete = False
+    task = Task.objects.get(id=task_id)
+    if task.is_completed:
+        task.is_completed = False
     else:
-        task.is_complete = True
+        task.is_completed = True
     task.save()
     return redirect('index')
 
@@ -50,12 +46,13 @@ def delete_task(request, task_id):
 
 
 
-def base(request):
-    context = {
-
-    }
-
 def text(request):
     context = {
 
     }
+def about_index(request):
+    context = {
+        "message": "The men who sold the world000000000000",
+        "color": "#34AB5E"
+    }
+    return render(request, 'pages/about_index.html', context=context)

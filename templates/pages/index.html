@@ -1,53 +1,179 @@
 {# дочерний шаблон index.html #}
 {% extends 'base.html' %}
+{% load static %}
 {% block title %} | HOME
 {% endblock title %}
 {% block content %}
-<div style="border: solid black 1px;">
-    <h1>TODOS IMAGE </h1>
-</div>
-<br>
-{{tasks}}
-<div style="border: solid green 1px; background-color: yellow;">
-    <h3>Create Task</h3>
-    <form action="{% url 'create_task' %}" method="POST">
+<header class="card mb-3" id="header">
+    <img src="{% static './img/facebook_cover_photo_2.png' %}" style="max-height: 500px;" class="card-img-top" alt="...">
+</header>
+
+
+<form action="{% url 'create_task' %}" method="POST">
         {% csrf_token %}
-        <input type="text" name="title" placeholder="Title"><br><br>
-        <textarea name="description" id="" cols="30" rows="1" placeholder="description"></textarea><br><br>
-        <input type="radio" name="priority" value="1">High <br>
-        <input type="radio" name="priority" value="2">Middle <br>
-        <input type="radio" name="priority" value="3">Low <br>
-        <input type="radio" name="priority" value="4">Non-priority <br> <br>
-        <button type="submit">Create Task</button>
-        <br>
-    <button type="submit">Create Task</button>
-    <br>
-    </form>
+    <!-- Create Task -->
+<div class="col-md-12 my-3 p-3 bg-create-task rounded shadow-sm">
+    <h6 class="border-bottom border-gray pb-2 mb-0">Create Task</h6>
+    <div class="media text-muted pt-3">
+      <div class="col-md-12 lh-125 border-bottom border-gray">
+        <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="title"><strong class="d-block text-gray-dark">Title</strong></label>
+            <input name="title" maxlength="50" type="text" class="form-control" id="title" placeholder="" required>
+            <small class="text-muted">Task title (max length 50 symbols)</small>
+            <div class="invalid-feedback">
+              Title is required
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="description"><strong class="d-block text-gray-dark">Description</strong></label>
+            <textarea name="description" maxlength="200" rows="1" type="text" class="form-control" id="description" placeholder="" required></textarea>
+            <small class="text-muted">Task description (max length 200 symbols)</small>
+            <div class="invalid-feedback">
+              Description is required
+            </div>
+        </div>
+        </div>
+      </div>
+    </div>
+    <div class="media text-muted pt-3">
+      <div class="col-md-12">
+        <div class="row my-3 lh-125 border-bottom border-gray" style="padding-bottom: 16px;">
+          <div class="col-md-3 custom-control custom-radio">
+            <input value="1" id="priority-1" name="priority" type="radio" class="custom-control-input" checked required>
+            <label class="custom-control-label" for="priority-1">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#bf504f"></rect><text x="50%" y="50%" fill="#bf504f" dy=".3em">32x32</text></svg>
+              <small class="text-muted">High priority</small></label>
+          </div>
+          <div class="col-md-3 custom-control custom-radio">
+            <input value="2" id="priority-2" name="priority" type="radio" class="custom-control-input"  required>
+            <label class="custom-control-label" for="priority-2">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#ee9242"></rect><text x="50%" y="50%" fill="#ee9242" dy=".3em">32x32</text></svg>
+              <small class="text-muted">Middle priority</small></label>
+          </div>
+          <div class="col-md-3 custom-control custom-radio">
+            <input value="3" id="priority-3" name="priority" type="radio" class="custom-control-input"  required>
+            <label class="custom-control-label" for="priority-3">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#04ab51"></rect><text x="50%" y="50%" fill="#04ab51" dy=".3em">32x32</text></svg>
+              <small class="text-muted">Low priority</small></label>
+          </div>
+          <div class="col-md-3 custom-control custom-radio">
+            <input value="4" id="priority-4" name="priority" type="radio" class="custom-control-input"  required>
+            <label class="custom-control-label" for="priority-4">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#046cb9"></rect><text x="50%" y="50%" fill="#046cb9" dy=".3em">32x32</text></svg>
+              <small class="text-muted">Not priority</small></label>
+          </div>
+        </div>
+        </div>
+    </div>
+    <small class="d-block text-right mt-3">
+      <button type="submit" class="btn btn-success btn-sm">Create task</a>
+    </small>
 </div>
-<br>
-<div style="border: solid red 1px; background-color: lightblue;">
-    <h3>Active Tasks</h3>
+  <!-- End Create Task -->    
+</form>
+
+
+<!-- Active Tasks -->
+<div class="col-md-12 my-3 p-3 bg-active-tasks rounded shadow-sm">
+    <h6 class="border-bottom border-gray pb-2 mb-0">Active Tasks</h6>
     {% for task in tasks %}
-        {% if not task.is_completed %}
-            <p>{{task}}
-                <a href="{% url 'complete_task' task.id %}">Complete</a>
-                <a href="{% url 'delete_task' task.id %}">Delete</a>
-            </p>
+    {% if not task.is_completed %}
+    <div class="media text-muted pt-3">
+      <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" focusable="false" role="img">
+        {% if task.priority == 1 %}
+        <rect width="100%" height="100%" fill="#bf504f"></rect>
+        {% elif task.priority == 2 %}
+        <rect width="100%" height="100%" fill="#ee9242"></rect>
+        {% elif task.priority == 3 %}
+        <rect width="100%" height="100%" fill="#04ab51"></rect>
+        {% elif task.priority == 4 %}
+        <rect width="100%" height="100%" fill="#046cb9"></rect>
         {% endif %}
+    </svg>
+      <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <strong class="text-gray-dark">{{task.title}}</strong>
+          <div class="d-flex justify-content-between align-items-left">
+            <a class="btn btn-secondary btn-sm disabled" tabindex="-1" role="button" aria-disabled="true" href="#" style="margin-right: 10px;">Edit</a>
+            <a class="btn btn-danger btn-sm" tabindex="-1" role="button" aria-disabled="false" href="{% url 'delete_task' task.id %}"style="margin-right: 10px;">Delete</a>
+            <a class="btn btn-primary btn-sm" tabindex="-1" role="button" aria-disabled="false" href="{% url 'complete_task' task.id %}">Complete</a>
+          </div>
+        </div>
+        <span class="d-block" style="margin-top: 10px;">{{task.description}}</span>
+      </div>
+    </div>
+    {% endif %}
     {% endfor %}
-</div>
-<br>
-<div style="border: solid red 1px; background-color: lime;">
-    <h3>Completed Tasks</h3>
+      <!-- <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#ee9242"></rect><text x="50%" y="50%" fill="#ee9242" dy=".3em">32x32</text></svg>
+      <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <strong class="text-gray-dark">Task Title (Low priority)</strong>
+          <div class="d-flex justify-content-between align-items-left">
+            <a class="btn btn-secondary btn-sm disabled" tabindex="-1" role="button" aria-disabled="true" href="#" style="margin-right: 10px;">Edit</a>
+            <a class="btn btn-primary btn-sm" tabindex="-1" role="button" aria-disabled="false" href="#">Complete</a>
+          </div>
+        </div>
+        <span class="d-block" style="margin-top: 10px;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse blanditiis, illum ipsam, eum commodi similique laborum recusandae illo facilis quas fugit excepturi laboriosam, magnam voluptates est provident voluptas cupiditate aut.</span>
+      </div>
+    </div> -->
+    
+    <!-- <div class="media text-muted pt-3">
+      <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#04ab51"></rect><text x="50%" y="50%" fill="#04ab51" dy=".3em">32x32</text></svg>
+      <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <strong class="text-gray-dark">Task Title (Middle priority)</strong>
+          <div class="d-flex justify-content-between align-items-left">
+            <a class="btn btn-secondary btn-sm disabled" tabindex="-1" role="button" aria-disabled="true" href="#" style="margin-right: 10px;">Edit</a>
+            <a class="btn btn-primary btn-sm" tabindex="-1" role="button" aria-disabled="false" href="#">Complete</a>
+          </div>
+        </div>
+        <span class="d-block" style="margin-top: 10px;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse blanditiis, illum ipsam, eum commodi similique laborum recusandae illo facilis quas fugit excepturi laboriosam, magnam voluptates est provident voluptas cupiditate aut.</span>
+      </div>
+  </div> -->
+    <!-- <div class="media text-muted pt-3">
+      <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#046cb9"></rect><text x="50%" y="50%" fill="#046cb9" dy=".3em">32x32</text></svg>
+      <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <strong class="text-gray-dark">Task Title (Not priority)</strong>
+          <div class="d-flex justify-content-between align-items-left">
+            <a class="btn btn-secondary btn-sm disabled" tabindex="-1" role="button" aria-disabled="true" href="#" style="margin-right: 10px;">Edit</a>
+            <a class="btn btn-primary btn-sm" tabindex="-1" role="button" aria-disabled="false" href="#">Complete</a>
+          </div>
+        </div>
+        <span class="d-block" style="margin-top: 10px;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse blanditiis, illum ipsam, eum commodi similique laborum recusandae illo facilis quas fugit excepturi laboriosam, magnam voluptates est provident voluptas cupiditate aut.</span>
+      </div>
+    </div> -->
+    <small class="d-block text-right mt-3">
+      <a class="btn btn-primary btn-sm" tabindex="-1" role="button" aria-disabled="false" href="#">Complete all tasks</a>
+    </small>
+  </div>
+  <!-- End Active Tasks -->
+<!-- Completed Tasks -->
+  <div class="col-md-12 my-3 p-3 bg-completed-tasks rounded shadow-sm">
+    <h6 class="border-bottom border-gray pb-2 mb-0">Completed Tasks</h6>
     {% for task in tasks %}
-        {% if task.is_completed %}
-            <p>{{task}}
-                <a href="{% url 'complete_task' task.id %}">Uncomplete</a>
-                <a href="{% url 'delete_task' task.id %}">Delete</a>
-            </p>
-        {% endif %}
+    {% if task.is_completed %}
+    <div class="media text-muted pt-3">
+      <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" focusable="false" role="img" aria-label="Placeholder: 32x32">
+        <rect width="100%" height="100%" fill="#949a9e"></rect>
+    </svg>
+      <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <strong class="text-gray-dark">{{task.title}}</strong>
+          <div class="d-flex justify-content-between align-items-left">
+            <a class="btn btn-warning btn-sm" tabindex="-1" role="button" aria-disabled="false" <a href="{% url 'complete_task' task.id %}" style="margin-right: 10px;">Uncomplete</a>
+            <a class="btn btn-danger btn-sm" tabindex="-1" role="button" aria-disabled="false" <a href="{% url 'delete_task' task.id %}">Delete</a>
+          </div>
+        </div>
+        <span class="d-block" style="margin-top: 10px;">{{task.description}}</span>
+      </div>
+    </div>
+    {% endif %}
     {% endfor %}
-</div>
-<a href="{% url 'delete_all_task' %}">Delete all tasks</a>
-<br>
+    <small class="d-block text-right mt-3">
+      <a class="btn btn-danger btn-sm" tabindex="-1" role="button" aria-disabled="false" href="">Delete all tasks</a>
+    </small>
+  </div>
+  <!-- End Completed Tasks -->
 {% endblock content %}
